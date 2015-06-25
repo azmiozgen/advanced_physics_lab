@@ -30,13 +30,15 @@ A perceptron takes several **binary inputs,** $ x_1, x_2, …, $ and produces a 
 
 In general it could have **more or fewer inputs.** Rosenblatt proposed a simple rule to compute the output. He introduced **weights, w1,w2,…, real numbers** expressing the **importance of the respective inputs to the output.** The **neuron's output, 0 or 1,** is determined by whether the **weighted sum** $\sum_j w_jx_j $ is **less than or greater than some threshold value.** Just like the weights, the **threshold is a real number** which is a **parameter of the neuron.** To put it in more precise algebraic terms:
 
-\begin{equation}  
-	output =  
-	\begin{cases}
-		0,& if \hspace{0.5 cm} \sum_j\ w_jx_j \leqslant threshold \\
-		1,& if \hspace{0.5 cm} \sum_j\ w_jx_j > threshold 
-	\end{cases}
+\begin{equation}
+		output =  
+		\begin{cases}
+			0,& if \hspace{0.5 cm} \sum_j\ w_jx_j \leqslant threshold \\
+			1,& if \hspace{0.5 cm} \sum_j\ w_jx_j > threshold 
+		\end{cases}
+		\hspace{2.5 cm} (1)
 \end{equation}
+
 
 That's all there is to how a perceptron works!
 
@@ -57,14 +59,15 @@ In this network, the first column of perceptrons **- the first layer of perceptr
 
 In the first example, it is defined perceptrons has just a single output. **In the network above the perceptrons look like they have multiple outputs.** In fact, **they're still single output.** The multiple output arrows are merely a useful way of **indicating that the output from a perceptron is being used as the input to several other perceptrons.** It's less unwieldy than drawing a single output line which then splits.
 
-Let's simplify the way we describe perceptrons. The first change is to write $ \sum_j w_jx_j $ as a dot product, $ w⋅x \equiv \sum_j w_jx_j $, where **w and x are vectors whose components are the weights and inputs, respectively.** The second change is to **move the threshold to the other side of the inequality,** and to **replace it by what's known as the perceptron's bias,** $ b \equiv −threshold. $ Using the bias instead of the threshold, the perceptron rule can be rewritten:
+Let's simplify the way we describe perceptrons. The first change is to write $ \sum_j w_jx_j $ as a dot product, $ w \cdot x \equiv \sum_j w_jx_j $, where **w and x are vectors whose components are the weights and inputs, respectively.** The second change is to **move the threshold to the other side of the inequality,** and to **replace it by what's known as the perceptron's bias,** $ b \equiv −threshold. $ Using the bias instead of the threshold, the perceptron rule can be rewritten:
 
 \begin{equation}
 	output =  
 	\begin{cases}
-		0,& if  \hspace{0.5 cm} w . x + b \leq 0 \\
-		1,& if  \hspace{0.5 cm}  w . x + b > 0 
+		0,& if  \hspace{0.5 cm} w \cdot x + b \leq 0 \\
+		1,& if  \hspace{0.5 cm}  w \cdot x + b > 0 
 	\end{cases}
+	\hspace{2.5 cm} (2)
 \end{equation}
 
 You can think of the **bias as a measure of how easy it is to get the perceptron to output a 1.** Or to put it in **more biological terms, the bias is a measure of how easy it is to get the perceptron to fire.** For a perceptron with a **really big bias, it's extremely easy for the perceptron to output a 1.** But if the **bias is very negative, then it's difficult for the perceptron to output a 1.** 
@@ -110,15 +113,17 @@ Okay, let me describe the sigmoid neuron. We'll depict sigmoid neurons in the **
 
 \begin{equation}
 	\sigma(z) \equiv \frac{1}{1 + e^{-z}}
+	\hspace{2.5 cm} (3)
 \end{equation}
 
 The **output** of a sigmoid neuron with inputs $ x_1, x_2, … $ weights $ w_1, w_2, … $ and bias $ b $ is
 
 \begin{equation}
 	\frac {1}{1+exp(−\sum_j w_jx_j − b)}
+	\hspace{2.5 cm} (4)
 \end{equation}
 
-To understand the **similarity** to the perceptron model, suppose $ z \equiv w ⋅ x + b $ is a **large positive number.** Then $ e ^ {−z} \approx 0 $ and so $ \sigma(z) \approx 1 $ just as it would have been for a perceptron. Suppose on the other hand that $ z = w ⋅ x + b $ is **very negative.** Then $ e ^ {−z} \to \infty $, and $ \sigma(z) \approx 0 $ like a perceptron. The shape is:
+To understand the **similarity** to the perceptron model, suppose $ z \equiv w \cdot x + b $ is a **large positive number.** Then $ e ^ {−z} \approx 0 $ and so $ \sigma(z) \approx 1 $ just as it would have been for a perceptron. Suppose on the other hand that $ z = w \cdot x + b $ is **very negative.** Then $ e ^ {−z} \to \infty $, and $ \sigma(z) \approx 0 $ like a perceptron. The shape is:
 
 ![sigmoid_function](https://lh3.googleusercontent.com/-WNMDpgwcC7I/VYk-QEgs9DI/AAAAAAAAAT8/MKuAMcVDYcM/s0/sigmoid_function.png "sigmoid_function.png")
 
@@ -127,7 +132,7 @@ This shape is a smoothed out version of a ***step function*** or ***Heaviside st
 
 ![step_function](https://lh3.googleusercontent.com/-lIMAxDaKs5U/VYlCQHeg_1I/AAAAAAAAAUM/gQwIY5OWpAo/s0/step_function.png "step_function")
 
-If $ \sigma $ had in fact been a step function, then the sigmoid neuron would be a perceptron, since the output would be 1 or 0 depending on whether $ w ⋅ x + b $ was positive or negative. Actually, when $ w ⋅ x + b = 0 $ the perceptron outputs 0, while the step function outputs 1. So, strictly speaking, we would need to **modify the step function** at that one point. 
+If $ \sigma $ had in fact been a step function, then the sigmoid neuron would be a perceptron, since the output would be 1 or 0 depending on whether $ w \cdot x + b $ was positive or negative. Actually, when $ w \cdot x + b = 0 $ the perceptron outputs 0, while the step function outputs 1. So, strictly speaking, we would need to **modify the step function** at that one point. 
 
 By using the actual $ \sigma $ function we get, a smoothed out perceptron. The smoothness of $ \sigma $ means that small changes $ \Delta w_j $ in the weights and $ \Delta b $ in the bias will produce a small change $ \Delta output $ in the output from the neuron. In fact, calculus tells us that $ \Delta output $ is well approximated by
 
@@ -135,6 +140,7 @@ By using the actual $ \sigma $ function we get, a smoothed out perceptron. The s
 	\Delta output \approx \sum_j 
 	\frac {\partial \ output}{\partial w_j} \Delta w_j + 
 	\frac {\partial \ output}{\partial b} \Delta b
+	\hspace{2.5 cm} (5)
 \end{equation}
 
 where the **sum is over all the weights,** $ w_j $, and $ \frac{\partial \ output}{\partial w_j} $ and $ \frac{\partial \ output}{\partial b} $ denote ***partial derivatives*** of the output with respect to $ w_j $ and $ b $, respectively. So while sigmoid neurons have much of the **same qualitative behaviour as perceptrons,** they make it **much easier to figure out how changing the weights and biases will change the output.**
@@ -146,6 +152,7 @@ If it's the shape of $ \sigma $ which really matters, and not its exact form, th
 		\frac{d\sigma}{dz} &= \left({1 - \frac{1}{1 + e ^ {-z}}}\right)
 		\left(\frac{1}{1 + e ^ {-z}}\right)\\
 		&=(1 - \sigma)\sigma
+		\hspace{5 cm} (6)
 \end{split}
 \end{equation}
 
@@ -205,12 +212,13 @@ Now the first thing we'll need is a **data set** to learn from so-called **train
 
 The MNIST data comes in **two parts.** The first part contains **60,000 images to be used as training data.** These images are scanned handwriting samples from 250 people, half of whom were US Census Bureau employees, and half of whom were high school students. The **images are grayscale and 28 by 28 pixels in size.** The second part of the MNIST data set is **10,000 images to be used as test data.** Again, these are 28 by 28 grayscale images. We'll **use the test data to evaluate how well our neural network has learned to recognize digits.** To make this a good test of performance, the **test data was taken from a different set of 250 people than the original training data** (albeit still a group split between Census Bureau employees and high school students). This helps give us confidence that our **system can recognize digits from people whose writing it didn't see during training.**
 
-We'll use the notation $ x $ to **denote a training input.** It'll be convenient to regard each training input $ x $ as a $ 28 * 28 = 784 $ dimensional vector. **Each entry in the vector represents the gray value for a single pixel in the image.** We'll denote the corresponding desired output by $ y = y(x) $, where $ y $ is a 10-dimensional vector. For example, if a particular training image, $ x $, depicts a 6, then $ y(x)=(0,0,0,0,0,0,1,0,0,0) ^ T $ is the desired output from the network. Note that $ T $ here is the **transpose operation,** turning a row vector into an ordinary (column) vector.
+We'll use the notation $ x $ to **denote a training input.** It'll be convenient to regard each training input $ x $ as a $ 28 \times 28 = 784 $ dimensional vector. **Each entry in the vector represents the gray value for a single pixel in the image.** We'll denote the corresponding desired output by $ y = y(x) $, where $ y $ is a 10-dimensional vector. For example, if a particular training image, $ x $, depicts a 6, then $ y(x)=(0,0,0,0,0,0,1,0,0,0) ^ T $ is the desired output from the network. Note that $ T $ here is the **transpose operation,** turning a row vector into an ordinary (column) vector.
 
 What we'd like is an algorithm which lets us **find weights and biases** so that the output from the network **approximates** $ y(x) $ **for all training inputs** $ x $. To quantify how well we're achieving this goal we define a ***cost function.*** Sometimes referred to as a ***loss or objective function.*** 
 
 \begin{equation}
 	C(w, \ b)\equiv\frac{1}{2n}\sum_x ||y(x) − a||^2
+	\hspace{2.5 cm} (7)
 \end{equation}
 
 Here, $ w $ denotes the **collection of all weights** in the network, $ b $ **all the biases,** $ n $ is the **total number of training inputs,** $ a $ is the **vector of outputs** from the network when $ x $ is input, and the **sum is over all training inputs, x.** Of course, the output $ a $ depends on $ x, w $ and $ b $. The notation $ ||v|| $ just denotes the **usual length function** for a vector $ v $. We'll call $ C $ the ***quadratic cost function***; it's also sometimes known as the ***mean squared error or just MSE.*** $ C(w, \ b) $ is **non-negative, since every term in the sum is non-negative.** Furthermore, the cost $ C(w, \ b) $ precisely when $ y(x) $ is approximately equal to the output, $ a $, for all training inputs, $ x $. So our training algorithm has done a good job if it can **find weights and biases so that** $ C(w, \ b) \approx 0 $. By contrast, it's not doing so well when $ C(w, \ b) $ is large - that would mean that $ y(x) $ is not close to the output a for a large number of inputs. So the **aim of our training algorithm will be to minimize the cost** $ C(w, \ b) $ **as a function of the weights and biases.** 
@@ -226,6 +234,7 @@ Let's think about what happens when we move the ball a small amount $ \Delta v_1
 \begin{equation}
 	\Delta C \approx \frac {\partial C}{\partial v_1} \Delta v_1 +
 	\frac{\partial C}{\partial v_2} \Delta v_2
+	\hspace{2.5 cm} (8)
 \end{equation}
 
 We're going to find a way of choosing $ \Delta v_1 $ and $ \Delta v_2 $ so as to make $ \Delta C $ negative; i.e., we'll choose them so the **ball is rolling down into the valley.** To figure out how to make such a choice it helps to define $ \Delta v $ to be the vector of changes in $ v $, $ \Delta v \equiv (\Delta v_1, \ \Delta v_2)^T $. We denote the gradient vector by $ \nabla C $, i.e.: 
@@ -233,6 +242,7 @@ We're going to find a way of choosing $ \Delta v_1 $ and $ \Delta v_2 $ so as to
 \begin{equation}
 	\nabla C \equiv \left( \frac{\partial C}{\partial v_1}, \ \frac{\partial C} 
 	{\partial v_2} \right)^T
+	\hspace{2.5 cm} (9)
 \end{equation}
 
 More generally, if $ C $ is function of $ m $ variables,
@@ -241,30 +251,36 @@ More generally, if $ C $ is function of $ m $ variables,
 	\nabla C \equiv \left( \frac{\partial C}{\partial v_1}, 
 	\frac{\partial C}{\partial v_2}, \ ..., \ \frac{\partial C} 
 	{\partial v_m} \right)^T
+	\hspace{2.5 cm} (10)
 \end{equation}
 
-With these definitions, the expression (7) for $ \Delta C $ can be rewritten as
+With these definitions, the expression (8) for $ \Delta C $ can be rewritten as
 
 \begin{equation}
 	\Delta C \approx \nabla C ⋅ \Delta v
+	\hspace{2.5 cm} (11)
 \end{equation}
 
 In particular, suppose we choose,
 
 \begin{equation}
 	\Delta v = −\eta \nabla C
+	\hspace{2.5 cm} (12)
 \end{equation}
 
-where $ \eta $ **is a small, positive parameter (known as the *learning rate*).** Then Equation (9) becomes
+where $ \eta $ **is a small, positive parameter (known as the *learning rate*).** Then Equation (11) becomes
 
 \begin{equation}
-	 \Delta C \approx −\eta \nabla C ⋅ \nabla C = −\eta || \nabla C|| ^ 2
+	 \Delta C \approx −\eta \nabla C \cdot \nabla C = −\eta || \nabla C|| ^ 
+	 2
+	 \hspace{2.5 cm} (13)
 \end{equation}
 
-This guarantees that $ \Delta C \leq 0 $, i.e., $ C $ **will always decrease.** This is exactly the property we wanted! And so we'll take Equation (10) to define the **"law of motion" for the ball** in our gradient descent algorithm. That is, we'll use Equation (10) to compute a value for $ \Delta v $, then move the ball's position v by that amount:
+This guarantees that $ \Delta C \leq 0 $, i.e., $ C $ **will always decrease.** This is exactly the property we wanted! And so we'll take Equation (12) to define the **"law of motion" for the ball** in our gradient descent algorithm. That is, we'll use Equation (12) to compute a value for $ \Delta v $, then move the ball's position v by that amount:
 
 \begin{equation}
 	 v \to v' = v − \eta \nabla C
+	 \hspace{2.5 cm} (14)
 \end{equation}
 
 Then we'll use this update rule again, to make another move. If we keep doing this, over and over, we'll **keep decreasing $ C $ until - we hope - we reach a global minimum.**
@@ -275,11 +291,13 @@ To make gradient descent work correctly, we need to **choose the learning rate**
 
 Unfortunately, **this rule does not always work** - several things can go wrong and **prevent gradient descent from finding the global minimum** of $ C $, a point we'll return to explore in later chapters. But, **in practice gradient descent often works extremely well**, and in neural networks we'll find that it's a powerful way of minimizing the cost function, and so helping the net learn.
 
-How can we apply gradient descent to learn in a neural network? The idea is to use gradient descent to find the weights $ w_k $ and biases $ b_l $ which minimize the cost in Equation (6). To see how this works, let's restate the gradient descent update rule, with the weights and biases replacing the variables $ v_j $. 
+How can we apply gradient descent to learn in a neural network? The idea is to use gradient descent to find the weights $ w_k $ and biases $ b_l $ which minimize the cost in Equation (7). To see how this works, let's restate the gradient descent update rule, with the weights and biases replacing the variables $ v_j $. 
 
 \begin{equation}
-	w_k \to w_k' = w_k − \eta \frac{\partial C}{\partial w_k} \\
+	w_k \to w_k' = w_k − \eta \frac{\partial C}{\partial w_k} \hspace{2.5 
+	cm} (15) \\
 	b_l \to b_l′ = b_l − \eta \frac{\partial C}{\partial b_l}
+	\hspace{2.5 cm} (16)
 \end{equation}
 
 By repeatedly applying this update rule we can "roll down the hill", and hopefully find a minimum of the cost function. In other words, this is a rule which can be used to learn in a neural network.
@@ -290,4 +308,4 @@ An idea called ***stochastic gradient descent*** can be used to **speed up learn
 
 To make these ideas more precise, stochastic gradient descent works by **randomly picking out a small number** $ m $ **of randomly chosen training inputs.** We'll label those random training inputs $ X_1, X_2,…, X_m $ and refer to them as a ***mini-batch.*** 
 
-It's much **easier to sample a small mini-batch than it is to apply gradient descent to the full batch.** For example, if we have a training set of size n=60,000, as in MNIST, and choose a mini-batch size of (say) m=10, this means we'll get a factor of **6,000 speedup** in estimating the gradient! Of course, the estimate won't be perfect - there will be statistical fluctuations - but it doesn't need to be perfect: all we really care about is moving in a general direction that will help decrease C, and that means we don't need an exact computation of the gradient. In practice, **stochastic gradient descent is a commonly used and powerful technique for learning in neural networks.** 
+It's much **easier to sample a small mini-batch than it is to apply gradient descent to the full batch.** For example, if we have a training set of size $ n = 60,000 $, as in MNIST, and choose a mini-batch size of (say) $ m = 10 $, this means we'll get a factor of **6,000 speedup** in estimating the gradient! Of course, the estimate won't be perfect - there will be statistical fluctuations - but it doesn't need to be perfect: all we really care about is moving in a general direction that will help decrease C, and that means we don't need an exact computation of the gradient. In practice, **stochastic gradient descent is a commonly used and powerful technique for learning in neural networks.** 
