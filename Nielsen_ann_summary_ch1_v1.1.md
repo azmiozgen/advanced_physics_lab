@@ -29,7 +29,7 @@ A perceptron takes several **binary inputs,** `$ x_1, x_2, …, $` and produces 
 
 In general it could have **more or fewer inputs.** Rosenblatt proposed a simple rule to compute the output. He introduced **weights,** `$ w1,w2,…, $` **real numbers** expressing the **importance of the respective inputs to the output.** The **neuron's output, 0 or 1,** is determined by whether the **weighted sum** `$\sum_j w_jx_j$` is **less than or greater than some threshold value.** Just like the weights, the **threshold is a real number** which is a **parameter of the neuron.** To put it in more precise algebraic terms:
 
-`
+```
 \begin{equation}
 	output =
 	\begin{cases}

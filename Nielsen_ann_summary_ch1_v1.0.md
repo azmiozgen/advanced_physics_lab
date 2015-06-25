@@ -216,10 +216,12 @@ We'll use the notation $ x $ to **denote a training input.** It'll be convenient
 
 What we'd like is an algorithm which lets us **find weights and biases** so that the output from the network **approximates** $ y(x) $ **for all training inputs** $ x $. To quantify how well we're achieving this goal we define a ***cost function.*** Sometimes referred to as a ***loss or objective function.*** 
 
+
 \begin{equation}
 	C(w, \ b)\equiv\frac{1}{2n}\sum_x ||y(x) − a||^2
 	\hspace{2.5 cm} (7)
 \end{equation}
+
 
 Here, $ w $ denotes the **collection of all weights** in the network, $ b $ **all the biases,** $ n $ is the **total number of training inputs,** $ a $ is the **vector of outputs** from the network when $ x $ is input, and the **sum is over all training inputs, x.** Of course, the output $ a $ depends on $ x, w $ and $ b $. The notation $ ||v|| $ just denotes the **usual length function** for a vector $ v $. We'll call $ C $ the ***quadratic cost function***; it's also sometimes known as the ***mean squared error or just MSE.*** $ C(w, \ b) $ is **non-negative, since every term in the sum is non-negative.** Furthermore, the cost $ C(w, \ b) $ precisely when $ y(x) $ is approximately equal to the output, $ a $, for all training inputs, $ x $. So our training algorithm has done a good job if it can **find weights and biases so that** $ C(w, \ b) \approx 0 $. By contrast, it's not doing so well when $ C(w, \ b) $ is large - that would mean that $ y(x) $ is not close to the output a for a large number of inputs. So the **aim of our training algorithm will be to minimize the cost** $ C(w, \ b) $ **as a function of the weights and biases.** 
 
@@ -308,4 +310,64 @@ An idea called ***stochastic gradient descent*** can be used to **speed up learn
 
 To make these ideas more precise, stochastic gradient descent works by **randomly picking out a small number** $ m $ **of randomly chosen training inputs.** We'll label those random training inputs $ X_1, X_2,…, X_m $ and refer to them as a ***mini-batch.*** 
 
+\begin{equation}
+	\nabla C \approx \frac{1}{m} \sum_{j = 1} \nabla C_{X_j}
+	\hspace{2.5 cm} (17)
+\end{equation}
+
+Equation (17) depicts that overall gradient can be estimated just by randomly chosen mini-batch. And updating weights and biases is like below
+
+\begin{equation}
+	w_k \to w_k' = w_k − \frac{\eta}{m} \sum_j \frac{\partial C_{X_j}}
+	{\partial w_k} \hspace{2.5 cm} (15) \\
+	b_l \to b_l′ = b_l − \frac{\eta}{m} \sum_j \frac{\partial C_{X_j}} 
+	{\partial b_l}
+	\hspace{2.5 cm} (16)
+\end{equation}
+
+where the sums are over all the training examples $ X_j $ in the current mini-batch. Then we pick out another **randomly chosen mini-batch** and train with those. And so on, until we've exhausted the training inputs, which is said to complete an ***epoch*** of training. At that point we start over with a new training epoch.
+
 It's much **easier to sample a small mini-batch than it is to apply gradient descent to the full batch.** For example, if we have a training set of size $ n = 60,000 $, as in MNIST, and choose a mini-batch size of (say) $ m = 10 $, this means we'll get a factor of **6,000 speedup** in estimating the gradient! Of course, the estimate won't be perfect - there will be statistical fluctuations - but it doesn't need to be perfect: all we really care about is moving in a general direction that will help decrease C, and that means we don't need an exact computation of the gradient. In practice, **stochastic gradient descent is a commonly used and powerful technique for learning in neural networks.** 
+
+## Implementing our network to classify digits
+
+Get [mnist_loader.py](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/mnist_loader.py) and [network.py](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network.py) from GitHub.
+
+First MNIST must be loaded. 
+
+```>>>import mnist_loader```
+```>>>training_data, validation_data, test_data = mnist_loader.load_data_wrapper() ```
+
+Then,
+
+```>>>import network```
+```>>>net = network.Network([784, 30, 10])```
+
+Finally, we'll use stochastic gradient descent to learn from the MNIST training_data over 30 epochs, with a mini-batch size of 10, and a learning rate of $ \eta $ = 3.0,
+
+```>>>net.SGD(training_data,30,10,3.0,test_data=test_data)```
+
+The results are,
+
+```
+Epoch 0: 9129 / 10000
+Epoch 1: 9295 / 10000
+Epoch 2: 9348 / 10000
+...
+Epoch 27: 9528 / 10000
+Epoch 28: 9542 / 10000
+Epoch 29: 9534 / 10000
+```
+That is, the trained network gives us a classification rate of about 95 percent - **95.42 percent at its peak ("Epoch 28")!** That's quite encouraging as a first attempt. However, that if you run the code then your results are **not necessarily going to be quite the same as mine, since we'll be initializing our network using (different) random weights and biases.**
+
+Choosing the learning rate $ \eta $ too low i.e. $ \eta = 0.001 $, causes **slowly convergence** and you may not get good results in reasonable epoch numbers like 100 epochs. On the other hand choosing $ \eta $ too high i.e. $ \eta = 100 $ causes to **divergence** continuously and you get very **low accurate results.** 
+
+Learning rate, epoch number, mini batch-size etc. are ***hyper parameters***. You can adjust these parameters and may get **better** and **faster** results.
+
+## Toward deep learning ##
+
+While our neural network gives impressive performance, that performance is somewhat mysterious. The weights and biases in the network were discovered automatically. And that means we don't immediately have an explanation of how the network does what it does. Can we find some way to understand the principles by which our network is classifying handwritten digits? And, given such principles, can we do better?
+
+A network which **breaks down a very complicated question** - does this image show a face or not - **into very simple questions answerable at the level of single pixels** can be modeled. It does this through a **series of many layers.** Networks with this kind of many-layer structure - **two or more hidden layers - are called deep neural networks.**
+
+Since 2006, a set of techniques has been developed that enable learning in deep neural nets. These deep learning techniques are based on ***stochastic gradient descent*** and ***backpropagation***, but also introduce new ideas. These techniques have enabled much deeper (and larger) networks to be trained - people now routinely train networks with **5 to 10 hidden layers.** And, it turns out that these **perform far better on many problems than shallow neural networks, i.e., networks with just a single hidden layer.** 
