@@ -1,4 +1,7 @@
-# Nielsen - Chapter 1: Using neural nets to recognize handwritten digits #
+Using Neural Nets to Recognize Handwritten Digits (Nielsen Chapter 1)
+=====================================================================
+
+{{toc}}
 
 ## Introduction ##
 
@@ -29,7 +32,7 @@ A perceptron takes several **binary inputs,** `$ x_1, x_2, …, $` and produces 
 
 In general it could have **more or fewer inputs.** Rosenblatt proposed a simple rule to compute the output. He introduced **weights,** `$ w1,w2,…, $` **real numbers** expressing the **importance of the respective inputs to the output.** The **neuron's output, 0 or 1,** is determined by whether the **weighted sum** `$\sum_j w_jx_j$` is **less than or greater than some threshold value.** Just like the weights, the **threshold is a real number** which is a **parameter of the neuron.** To put it in more precise algebraic terms:
 
-```
+`
 \begin{equation}
 	output =
 	\begin{cases}
@@ -272,7 +275,7 @@ More generally, if `$ C $` is function of `$ m $` variables,
 \end{equation}
 `
 
-With these definitions, the expression (7) for `$ \Delta C $` can be rewritten as
+With these definitions, the expression (8) for `$ \Delta C $` can be rewritten as
 
 `
 \begin{equation}
@@ -290,7 +293,7 @@ In particular, suppose we choose,
 \end{equation}
 `
 
-where `$ \eta $` **is a small, positive parameter (known as the *learning rate*).** Then Equation (12) becomes
+where `$ \eta $` **is a small, positive parameter (known as the *learning rate*).** Then Equation (11) becomes
 
 `
 \begin{equation}
@@ -299,7 +302,7 @@ where `$ \eta $` **is a small, positive parameter (known as the *learning rate*)
 \end{equation}
 `
 
-This guarantees that `$ \Delta C \leq 0 $`, i.e., `$ C $` **will always decrease.** This is exactly the property we wanted! And so we'll take Equation (12) to define the **"law of motion" for the ball** in our gradient descent algorithm. That is, we'll use Equation (10) to compute a value for `$ \Delta v $`, then move the ball's position v by that amount:
+This guarantees that `$ \Delta C \leq 0 $`, i.e., `$ C $` **will always decrease.** This is exactly the property we wanted! And so we'll take Equation (12) to define the **"law of motion" for the ball** in our gradient descent algorithm. That is, we'll use Equation (12) to compute a value for `$ \Delta v $`, then move the ball's position v by that amount:
 
 `
 \begin{equation}
@@ -312,7 +315,7 @@ Then we'll use this update rule again, to make another move. If we keep doing th
 
 Summing up, the way the gradient descent algorithm works is to repeatedly **compute the gradient** `$ \nabla C $`, **and then to move in the opposite direction, "falling down" the slope of the valley.**
 
-To make gradient descent work correctly, we need to **choose the learning rate** `$ \eta $` **to be small enough that Equation (9) is a good approximation.** If we don't, we might end up with `$ \Delta C > 0 $`, which obviously would not be good! At the same time, **we don't want** `$ \eta $` **to be too small, since that will make the changes** `$ \Delta v $` **tiny, and thus the gradient descent algorithm will work very slowly.**
+To make gradient descent work correctly, we need to **choose the learning rate** `$ \eta $` **to be small enough that Equation (12) is a good approximation.** If we don't, we might end up with `$ \Delta C > 0 $`, which obviously would not be good! At the same time, **we don't want** `$ \eta $` **to be too small, since that will make the changes** `$ \Delta v $` **tiny, and thus the gradient descent algorithm will work very slowly.**
 
 Unfortunately, **this rule does not always work** - several things can go wrong and **prevent gradient descent from finding the global minimum** of `$ C $`, a point we'll return to explore in later chapters. But, **in practice gradient descent often works extremely well**, and in neural networks we'll find that it's a powerful way of minimizing the cost function, and so helping the net learn.
 
@@ -320,9 +323,9 @@ How can we apply gradient descent to learn in a neural network? The idea is to u
 
 `
 \begin{equation}
-	w_k \to w_k' = w_k − \eta \frac{\partial C}{\partial w_k} \\
+	w_k \to w_k' = w_k − \eta \frac{\partial C}{\partial w_k} \hspace{5 cm} (15)\\
 	b_l \to b_l′ = b_l − \eta \frac{\partial C}{\partial b_l}
-\hspace{5 cm} (15)
+\hspace{5 cm} (16)
 \end{equation}
 `
 
@@ -330,8 +333,79 @@ By repeatedly applying this update rule we can "roll down the hill", and hopeful
 
 Notice that this cost function has the form `$ C = \frac{1}{n} \sum_x C_x $`, that is, it's an **average over costs** `$ C_x ≡ \frac{||y(x) − a|| ^ 2}{2} $` for individual training examples. In practice, to compute the gradient `$ \nabla C $` we need to **compute the gradients** `$ \nabla C_x $` **separately** for each training input, `$ x $`, and then average them, `$ \nabla C = \frac{1}{n} \sum_x \nabla C_x $`. Unfortunately, when the number of training inputs is very large this can **take a long time**, and **learning thus occurs slowly.**
 
-An idea called ***stochastic gradient descent*** can be used to **speed up learning**. The idea is to **estimate the gradient** `$ \nabla C $` by computing `$ \nabla C_x $` for a **small sample of randomly chosen training inputs.** By **averaging over this small sample** it turns out that we can quickly get a **good estimate of the true gradient** `$ \nabla C $`, and this **helps speed up gradient descent, and thus learning.**
+An idea called ***stochastic gradient descent*** can be used to **speed up learning**. The idea is to **estimate the gradient** `$ \nabla C $` by computing `$ \nabla C_x $` for a **small sample of randomly chosen training inputs.** By **averaging over this small sample** it turns out that we can quickly get a **good estimate of the true gradient** $ \nabla C $, and this **helps speed up gradient descent, and thus learning.**
 
 To make these ideas more precise, stochastic gradient descent works by **randomly picking out a small number** `$ m $` **of randomly chosen training inputs.** We'll label those random training inputs `$ X_1, X_2,…, X_m $` and refer to them as a ***mini-batch.***
 
-It's much **easier to sample a small mini-batch than it is to apply gradient descent to the full batch.** For example, if we have a training set of size n=60,000, as in MNIST, and choose a mini-batch size of (say) m=10, this means we'll get a factor of **6,000 speedup** in estimating the gradient! Of course, the estimate won't be perfect - there will be statistical fluctuations - but it doesn't need to be perfect: all we really care about is moving in a general direction that will help decrease C, and that means we don't need an exact computation of the gradient. In practice, **stochastic gradient descent is a commonly used and powerful technique for learning in neural networks.**
+`
+\begin{equation}
+	\nabla C \approx \frac{1}{m} \sum_{j = 1} \nabla C_{X_j}
+	\hspace{2.5 cm} (17)
+\end{equation}
+`
+
+Equation (17) depicts that overall gradient can be estimated just by randomly chosen mini-batch. And updating weights and biases is like below
+
+`
+\begin{equation}
+	w_k \to w_k' = w_k − \frac{\eta}{m} \sum_j \frac{\partial C_{X_j}}
+	{\partial w_k} \hspace{2.5 cm} (15) \\
+	b_l \to b_l′ = b_l − \frac{\eta}{m} \sum_j \frac{\partial C_{X_j}}
+	{\partial b_l}
+	\hspace{2.5 cm} (16)
+\end{equation}
+`
+
+where the sums are over all the training examples `$ X_j $` in the current mini-batch. Then we pick out another **randomly chosen mini-batch** and train with those. And so on, until we've exhausted the training inputs, which is said to complete an ***epoch*** of training. At that point we start over with a new training epoch.
+
+It's much **easier to sample a small mini-batch than it is to apply gradient descent to the full batch.** For example, if we have a training set of size `$ n = 60,000 $`, as in MNIST, and choose a mini-batch size of (say) `$ m = 10 $`, this means we'll get a factor of **6,000 speedup** in estimating the gradient! Of course, the estimate won't be perfect - there will be statistical fluctuations - but it doesn't need to be perfect: all we really care about is moving in a general direction that will help decrease C, and that means we don't need an exact computation of the gradient. In practice, **stochastic gradient descent is a commonly used and powerful technique for learning in neural networks.**
+
+## Implementing our network to classify digits
+
+Get [mnist_loader.py](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/mnist_loader.py) and [network.py](https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network.py) from GitHub.
+
+First MNIST must be loaded.
+
+```
+>>>import mnist_loader
+>>>training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+```
+
+Then,
+
+```
+>>>import network
+>>>net = network.Network([784, 30, 10])
+```
+
+Finally, we'll use stochastic gradient descent to learn from the MNIST training_data over 30 epochs, with a mini-batch size of 10, and a learning rate of `$ \eta $` = 3.0,
+
+```
+>>>net.SGD(training_data,30,10,3.0,test_data=test_data)
+```
+
+The results are,
+
+```
+Epoch 0: 9129 / 10000
+Epoch 1: 9295 / 10000
+Epoch 2: 9348 / 10000
+...
+Epoch 27: 9528 / 10000
+Epoch 28: 9542 / 10000
+Epoch 29: 9534 / 10000
+```
+
+That is, the trained network gives us a classification rate of about 95 percent - **95.42 percent at its peak ("Epoch 28")!** That's quite encouraging as a first attempt. However, that if you run the code then your results are **not necessarily going to be quite the same as mine, since we'll be initializing our network using (different) random weights and biases.**
+
+Choosing the learning rate `$ \eta $` too low i.e. `$ \eta = 0.001 $`, causes **slowly convergence** and you may not get good results in reasonable epoch numbers like 100 epochs. On the other hand choosing `$ \eta $` too high i.e. `$ \eta = 100 $` causes to **divergence** continuously and you get very **low accurate results.**
+
+Learning rate, epoch number, mini batch-size etc. are ***hyper parameters***. You can adjust these parameters and may get **better** and **faster** results.
+
+## Toward deep learning ##
+
+While our neural network gives impressive performance, that performance is somewhat mysterious. The weights and biases in the network were discovered automatically. And that means we don't immediately have an explanation of how the network does what it does. Can we find some way to understand the principles by which our network is classifying handwritten digits? And, given such principles, can we do better?
+
+A network which **breaks down a very complicated question** - does this image show a face or not - **into very simple questions answerable at the level of single pixels** can be modeled. It does this through a **series of many layers.** Networks with this kind of many-layer structure - **two or more hidden layers - are called deep neural networks.**
+
+Since 2006, a set of techniques has been developed that enable learning in deep neural nets. These deep learning techniques are based on ***stochastic gradient descent*** and ***backpropagation***, but also introduce new ideas. These techniques have enabled much deeper (and larger) networks to be trained - people now routinely train networks with **5 to 10 hidden layers.** And, it turns out that these **perform far better on many problems than shallow neural networks, i.e., networks with just a single hidden layer.**
