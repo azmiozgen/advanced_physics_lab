@@ -127,7 +127,7 @@ class Network():
             a = sigmoid_vec(np.dot(w, a) + b)
         return a
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta,
+    def SGD(self, training_data, epochs, mini_batch_size, eta, dropout=False,
             lmbda = 0.0,
             evaluation_data=None,
             monitor_evaluation_cost=False,
@@ -166,9 +166,17 @@ class Network():
                 training_data[k:k + mini_batch_size]
                 for k in xrange(0, n, mini_batch_size)]
 
-            for mini_batch in mini_batches:
-                self.update_mini_batch(
-                    mini_batch, eta, lmbda, len(training_data))
+            if dropout:
+                for index, hiddenLayerSize in enumerate(self.sizes[1:-1]):
+                    self.dropVector = [np.random.randint(2, size=hiddenLayerSize)]
+                for mini_batch in mini_batches:
+                    self.update_mini_batch(
+                        mini_batch, eta, lmbda, len(training_data), dropout=True)
+
+            else:
+                for mini_batch in mini_batches:
+                    self.update_mini_batch(
+                        mini_batch, eta, lmbda, len(training_data))
 
             print "Epoch %s training complete" % j
 
@@ -199,19 +207,22 @@ class Network():
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
 
-    def update_mini_batch(self, mini_batch, eta, lmbda, n):
-        """
+    def update_mini_batch(self, mini_batch, eta, lmbda, n, dropout=False):
+        '''
         Update the network's weights and biases by applying gradient
         descent using backpropagation to a single mini batch.  The
         'mini_batch' is a list of tuples '(x, y)', 'eta' is the
         learning rate, 'lmbda' is the regularization parameter, and
         'n' is the total size of the training data set.
-        """
+        '''
         nabla_b = [np.zeros(b.shape) for b in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
 
         for x, y in mini_batch:
-            delta_nabla_b, delta_nabla_w = self.backprop(x, y)
+            if dropout:
+                delta_nabla_b, delta_nabla_w = self.backprop(x, y, dropout=True)
+            else:
+                delta_nabla_b, delta_nabla_w = self.backprop(x, y)
             nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
 
@@ -220,7 +231,7 @@ class Network():
         self.biases = [b - (eta / len(mini_batch)) * nb
                        for b, nb in zip(self.biases, nabla_b)]
 
-    def backprop(self, x, y):
+    def backprop(self, x, y, dropout=False):
         '''
         Return a tuple '(nabla_b, nabla_w)' representing the
         gradient for the cost function C_x.  'nabla_b' and
@@ -241,6 +252,11 @@ class Network():
             zs.append(z)
             activation = sigmoid_vec(z)
             activations.append(activation)
+
+        if dropout:
+            for index, hiddenLayerSize in enumerate(self.sizes[1:-1]):
+                # dropVector = [np.random.randint(2, size=hiddenLayerSize)]
+                activations[index + 1] = np.multiply(self.dropVector, activations[index + 1].transpose()).reshape(-1, 1)
 
         # backward pass
         delta = (self.cost).delta(zs[-1], activations[-1], y)
