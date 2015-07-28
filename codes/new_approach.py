@@ -154,6 +154,8 @@ class Network():
         are empty if the corresponding flag is not set.
         '''
 
+        import matplotlib.pyplot as plt
+
         if evaluation_data:
             n_data = len(evaluation_data)
         n = len(training_data)
@@ -167,7 +169,7 @@ class Network():
                 for k in xrange(0, n, mini_batch_size)]
 
             if dropout:
-                for index, hiddenLayerSize in enumerate(self.sizes[1:-1]):
+                for hiddenLayerSize in self.sizes[1:-1]:
                     self.dropVector = [np.random.randint(2, size=hiddenLayerSize)]
                 for mini_batch in mini_batches:
                     self.update_mini_batch(
@@ -251,6 +253,11 @@ class Network():
             z = np.dot(w, activation) + b
             zs.append(z)
             activation = sigmoid_vec(z)
+            if dropout:
+                if (b, w) != zip(self.biases, self.weights)[-1]:
+                ## Compensate layer outputs because of missing dropout neurons
+                    activation *= float(len(self.dropVector[0])) / \
+                                  len(np.where(self.dropVector[0] == 1)[0])
             activations.append(activation)
 
         if dropout:
@@ -337,6 +344,7 @@ class Network():
         f = open(filename, "w")
         json.dump(data, f)
         f.close()
+
 
 #### Loading a Network
 def load(filename):
