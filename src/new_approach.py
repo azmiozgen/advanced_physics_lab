@@ -62,7 +62,6 @@ class CrossEntropyCost:
         '''
         return (a - y)
 
-
 #### Main Network class
 class Network():
 
@@ -242,7 +241,7 @@ class Network():
                         for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b - (eta / len(mini_batch)) * nb
                        for b, nb in zip(self.biases, nabla_b)]
-                       
+
     def backprop(self, x, y, dropout=False):
         '''
         Return a tuple '(nabla_b, nabla_w)' representing the
