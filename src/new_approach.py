@@ -119,12 +119,16 @@ class Network():
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(self.sizes[:-1], self.sizes[1:])]
 
-    def feedforward(self, a):
+    def feedforward(self, a, dropout=False):
         '''
         Return the output of the network if 'a' is input.
         '''
         for b, w in zip(self.biases, self.weights):
-            a = sigmoid_vec(np.dot(w, a) + b)
+            if dropout and len(b) == self.sizes[-1]:
+                ## Weights effect drop down as p_dropout == 0.5
+                a = sigmoid_vec(np.dot(0.5 * w, a) + b)
+            else:
+                a = sigmoid_vec(np.dot(w, a) + b)
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta, dropout=False,
@@ -167,9 +171,11 @@ class Network():
                 for k in xrange(0, n, mini_batch_size)]
 
             if dropout:
-                for index, hiddenLayerSize in enumerate(self.sizes[1:-1]):
-                    self.dropVector = [np.random.randint(2, size=hiddenLayerSize)]
                 for mini_batch in mini_batches:
+                    for hiddenLayerSize in self.sizes[1: -1]:
+                        ## Binomial mask vector
+                        ## The value 0.5 can be generalized as 'p_dropout'
+                        self.dropVector = [np.random.binomial(1, 0.5, size=hiddenLayerSize)]
                     self.update_mini_batch(
                         mini_batch, eta, lmbda, len(training_data), dropout=True)
 
@@ -186,7 +192,10 @@ class Network():
                 print "Cost on training data: {}".format(cost)
 
             if monitor_training_accuracy:
-                accuracy = self.accuracy(training_data, convert=True)
+                if dropout:
+                    accuracy = self.accuracy(training_data, convert=True, dropout=True)
+                else:
+                    accuracy = self.accuracy(training_data, convert=True)
                 training_accuracy.append(accuracy)
                 print "Accuracy on training data: {} / {}".format(
                     accuracy, n)
@@ -197,7 +206,10 @@ class Network():
                 print "Cost on evaluation data: {}".format(cost)
 
             if monitor_evaluation_accuracy:
-                accuracy = self.accuracy(evaluation_data)
+                if dropout:
+                    accuracy = self.accuracy(evaluation_data, dropout=True)
+                else:
+                    accuracy = self.accuracy(evaluation_data)
                 evaluation_accuracy.append(accuracy)
                 print "Accuracy on evaluation data: {} / {}".format(
                     self.accuracy(evaluation_data), n_data)
@@ -230,7 +242,7 @@ class Network():
                         for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b - (eta / len(mini_batch)) * nb
                        for b, nb in zip(self.biases, nabla_b)]
-
+                       
     def backprop(self, x, y, dropout=False):
         '''
         Return a tuple '(nabla_b, nabla_w)' representing the
@@ -245,18 +257,16 @@ class Network():
         ## feedforward
         activation = x
         activations = [x] ## list to store all the activations, layer by layer
-        zs = [] # list to store all the z vectors, layer by layer
+        zs = [] ## list to store all the z vectors, layer by layer
 
         for b, w in zip(self.biases, self.weights):
             z = np.dot(w, activation) + b
             zs.append(z)
             activation = sigmoid_vec(z)
+            if dropout and len(b) != self.sizes[-1]:
+                ## Apply mask to activation
+                activation = np.multiply(self.dropVector, activation.transpose()).reshape(-1, 1)
             activations.append(activation)
-
-        if dropout:
-            for index, hiddenLayerSize in enumerate(self.sizes[1:-1]):
-                # dropVector = [np.random.randint(2, size=hiddenLayerSize)]
-                activations[index + 1] = np.multiply(self.dropVector, activations[index + 1].transpose()).reshape(-1, 1)
 
         # backward pass
         delta = (self.cost).delta(zs[-1], activations[-1], y)
@@ -274,11 +284,14 @@ class Network():
             z = zs[-l]
             spv = sigmoid_prime_vec(z)
             delta = np.dot(self.weights[-l + 1].transpose(), delta) * spv
+            if dropout:
+                ## Apply masking to prevent updating dropout neurons
+                delta = np.multiply(self.dropVector, delta.transpose()).reshape(-1, 1)
             nabla_b[-l] = delta
             nabla_w[-l] = np.dot(delta, activations[-l - 1].transpose())
         return (nabla_b, nabla_w)
 
-    def accuracy(self, data, convert=False):
+    def accuracy(self, data, convert=False, dropout=False):
         '''
         Return the number of inputs in 'data' for which the neural
         network outputs the correct result. The neural network's
@@ -302,11 +315,19 @@ class Network():
         '''
 
         if convert:
-            results = [(np.argmax(self.feedforward(x)), np.argmax(y))
-                       for (x, y) in data]
+            if dropout:
+                results = [(np.argmax(self.feedforward(x, dropout=True)), np.argmax(y))
+                            for (x, y) in data]
+            else:
+                results = [(np.argmax(self.feedforward(x)), np.argmax(y))
+                            for (x, y) in data]
         else:
-            results = [(np.argmax(self.feedforward(x)), y)
-                        for (x, y) in data]
+            if dropout:
+                results = [(np.argmax(self.feedforward(x, dropout=True)), y)
+                            for (x, y) in data]
+            else:
+                results = [(np.argmax(self.feedforward(x)), y)
+                            for (x, y) in data]
         return sum(int(x == y) for (x, y) in results)
 
     def total_cost(self, data, lmbda, convert=False):
