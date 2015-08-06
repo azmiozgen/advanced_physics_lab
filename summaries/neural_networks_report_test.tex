@@ -11,7 +11,9 @@
  top=25mm,
  bottom=25mm,
  }
-\usepackage{lmodern}
+ \usepackage{setspace}
+\renewcommand*\abstractname{Abstract}
+\usepackage{times}  % Times New Roman
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
@@ -50,7 +52,7 @@
 \fi
 \hypersetup{breaklinks=true,
             bookmarks=true,
-            pdfauthor={A. Levent Subaşı, Azmi C. Özgen},
+            pdfauthor={Azmi C. Özgen},
             pdftitle={A New Approach to Neural Networks},
             colorlinks=true,
             citecolor=blue,
@@ -65,13 +67,31 @@
 
 \begin{document}
 
-\section{1. Abstract}\label{abstract}
+\pagenumbering{roman}
+\onehalfspacing
+\pagestyle{plain}
+\tableofcontents
+\setcounter{page}{1}
 
-Machine learning is a growing area in computer science. Neural networks
-is very popular subdomain of it. This project generally covers the work
-of M. Nielsen and his book Neural Networks and Deep Learning{[}1{]}. We
-will first introduce neual networks and then aplly it to a generic
-problem which is called classifying handwritten digits.
+\begin{abstract}
+    \thispagestyle{plain}
+    \pagenumbering{roman}
+    \setcounter{page}{2}
+    \addcontentsline{toc}
+    Machine learning is a growing area in computer science. Neural networks
+    is very popular subdomain of it. This project generally covers the work
+    of M. Nielsen and his book Neural Networks and Deep Learning{[}1{]}. We
+    will first introduce neual networks and then aplly it to a generic
+    problem which is called classifying handwritten digits.
+\end{abstract}
+
+% \section{1. Abstract}\label{abstract}
+%
+% Machine learning is a growing area in computer science. Neural networks
+% is very popular subdomain of it. This project generally covers the work
+% of M. Nielsen and his book Neural Networks and Deep Learning{[}1{]}. We
+% will first introduce neual networks and then aplly it to a generic
+% problem which is called classifying handwritten digits.
 
 \section{2. Introduction}\label{introduction}
 
@@ -135,7 +155,5 @@ precise algebraic terms:
             1,& if \hspace{0.5 cm} \sum_j\ w_jx_j > threshold
         \end{cases}
 \end{equation}
-
-``train_data''
 
 \end{document}

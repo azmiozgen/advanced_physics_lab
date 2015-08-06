@@ -1,6 +1,9 @@
 \documentclass[12 pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\title{A New Approach to Neural Networks}
+\author{Azmi C. Özgen}
+\usepackage{setspace}
 % \usepackage[top=2.5cm, bottom=2.5cm, left=4cm, right=2.5cm]{geometry}
 \usepackage{geometry}
  \geometry{
@@ -11,9 +14,11 @@
  top=25mm,
  bottom=25mm,
  }
-\usepackage{lmodern}
+\usepackage{titlesec}
+\usepackage{times} %Times New Roman
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
+\usepackage{multicol}
 \usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
@@ -50,12 +55,12 @@
 \fi
 \hypersetup{breaklinks=true,
             bookmarks=true,
-            pdfauthor={A. Levent Subaşı, Azmi C. Özgen},
+            pdfauthor={Azmi C. Özgen},
             pdftitle={A New Approach to Neural Networks},
             colorlinks=true,
             citecolor=blue,
             urlcolor=blue,
-            linkcolor=magenta,
+            linkcolor=black,
             pdfborder={0 0 0}}
 \urlstyle{same}  % don't use monospace font for urls
 \setlength{\parindent}{0pt}
@@ -64,16 +69,40 @@
 \setcounter{secnumdepth}{0}
 
 \begin{document}
+\onehalfspacing
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\newpage
+\begin{abstract}
+    \thispagestyle{plain}
+    \setcounter{page}{3}
+    Machine learning is a growing area in computer science. Neural networks
+    is very popular subdomain of it. This project generally covers the work
+    of M. Nielsen and his book Neural Networks and Deep Learning. We
+    will first introduce neual networks and then apply it to a generic
+    problem which is called classifying handwritten digits.
+\end{abstract}
+\newpage
 
-\section{Abstract}\label{abstract}
+\section{Acknowledgements}
+I would like to thank first my advisor A. Levent Subaşı for his insightful
+comments. And I am grateful Berkin Malkoç, Melih Taşdizen and Kürşat Aker
+for their precious support. Also, I thank my fellow mates Mustafa Can Uslu,
+Onur Kaplan and Ceren Güzelgün for their fabulous friendships. Last but
+not the least, I thank to my family for their endless support.
+\newpage
 
-Machine learning is a growing area in computer science. Neural networks
-is very popular subdomain of it. This project generally covers the work
-of M. Nielsen and his book Neural Networks and Deep Learning{[}1{]}. We
-will first introduce neual networks and then aplly it to a generic
-problem which is called classifying handwritten digits.
+\section{Abbreviations}
+    MLP   &  Multilayer Perceptron \\
+    MNIST &  Mixed National Institute of Standards and Technology database \\
+    MSE   &  Mean Squared Error \\
+\newpage
 
 \section{1. Introduction}\label{introduction}
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 The idea of neural networks is to take a large number of dataset known
 as training examples, and then develop a system which can learn from
@@ -94,7 +123,8 @@ billions of training examples.
 \end{figure}
 
 This project is concerned with write a computer program implementing a
-neural network that learns to recognize handwritten digits.
+neural network that learns to recognize handwritten digits and generally
+covers the work of M. Nielsen and his book Neural Networks and Deep Learning.\cite{ref1}
 
 Along the way there are many key ideas about neural networks, including
 two important types of artificial neuron (the perceptron and the sigmoid
@@ -115,7 +145,7 @@ and produces a single binary output:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz0.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz0.png}
 \caption{Perceptron}
 \end{figure}
 
@@ -150,7 +180,7 @@ make quite subtle decisions:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz1.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz1.png}
 \caption{Multilayer Perceptron (MLP)}
 \end{figure}
 
@@ -178,7 +208,7 @@ write $ \sum_j w_j x_j $ as a dot product, $ w \cdot x
 the weights and inputs, respectively.
 The second change is to move the threshold to the other side of the inequality,
 and to replace it by what's known as the perceptron's bias,
-$ b \equiv −threshold. $ Using the bias instead of the threshold, the
+$ b \equiv -threshold. $ Using the bias instead of the threshold, the
 perceptron rule can be rewritten:
 
 \begin{equation}
@@ -213,7 +243,7 @@ to do handwriting recognition!):
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz8.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz8.png}
 \caption{Effects of changing weights to the output}
 \end{figure}
 
@@ -263,11 +293,11 @@ To understand the similarity to the perceptron model, suppose $ z
 \approx 0 $ and so $ \sigma(z) \approx 1 $ just as it would
 have been for a perceptron. Suppose on the other hand that $ z = w
 \cdot x + b $ is very negative. Then $ e ^{−z} \to \infty $,
-and $ \sigma(z) \approx 0 $ like a perceptron. The shape is:
+and $ \sigma(z) \approx 0 $ like a perceptron. 
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/sigmoid_function.png}
+\includegraphics[width=0.7\textwidth]{./figs/sigmoid_function.png}
 \caption{Sigmoid function}
 \end{figure}
 
@@ -276,7 +306,7 @@ step function:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/step_function.png}
+\includegraphics[width=0.7\textwidth]{./figs/step_function.png}
 \caption{Step function}
 \end{figure}
 
@@ -329,9 +359,10 @@ turns out that when we compute those partial derivatives, using $
 
 Suppose we have the network:
 
+\newpage
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz10.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz10.png}
 \caption{Simple architecture}
 \end{figure}
 
@@ -346,7 +377,7 @@ has two hidden layers:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz11.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz11.png}
 \caption{Layers}
 \end{figure}
 
@@ -395,7 +426,7 @@ digit.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/digits_separate.png}
+\includegraphics[width=0.5\textwidth]{./figs/digits_separate.png}
 \caption{Seperate digits}
 \end{figure}
 
@@ -407,7 +438,7 @@ To recognize individual digits we will use a three-layer neural network:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz12.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz12.png}
 \caption{Three layered feedforward network}
 \end{figure}
 
@@ -437,7 +468,7 @@ wondering why using 10 output neurons works better?
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/mnist_other_features.png}
+\includegraphics[width=0.5\textwidth]{./figs/mnist_other_features.png}
 \caption{Some parts of number 0}
 \end{figure}
 
@@ -459,7 +490,7 @@ their correct classifications. Images are the same as used before.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/digits_separate.png}
+\includegraphics[width=0.5\textwidth]{./figs/digits_separate.png}
 \caption{MNIST data set samples}
 \end{figure}
 
@@ -504,7 +535,7 @@ the sum is over all training inputs, x. Of course, the output $ a $
 depends on $ x, w $ and $ b $. The notation
 $ ||v|| $ just denotes the usual length function for a vector $ v $.
 We'll call $ C $ the quadratic cost function; it's also sometimes
-known as the mean squared error orjust MSE.
+known as the mean squared error or just MSE.
 $ C(w, \ b) $ is non-negative, since every term in the sum is
 non-negative. Furthermore, the cost $ C(w, \ b) $ precisely when $ y(x) $
 is approximately equal to the output, $ a $,
@@ -521,7 +552,7 @@ This could be any real-valued function of many variables, $ v = v_1, v_2, \ldots
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/valley.png}
+\includegraphics[width=0.7\textwidth]{./figs/valley.png}
 \caption{Sample cost function with double variables}
 \end{figure}
 
@@ -698,7 +729,7 @@ technique for learning in neural networks.
 \label{implementing-our-network-to-classify-digits}
 
 Get the codes from
-https://github.com/mnielsen/neural-networks-and-deep-learning
+https://github.com/mnielsen/neural-networks-and-deep-learning\cite{ref2}
 
 First MNIST must be loaded.
 
@@ -775,7 +806,7 @@ layer of a network:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz16.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz16.png}
 \caption{Weight notation}
 \end{figure}
 
@@ -787,7 +818,7 @@ layer. The following diagram shows examples of these notations in use:
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{./figs/tikz17.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz17.png}
 \caption{Bias and activation notation}
 \end{figure}
 
@@ -1072,7 +1103,7 @@ with just one input:
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{./figs/tikz28.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz28.png}
 \caption{Simple neuron}
 \end{figure}
 
@@ -1159,7 +1190,7 @@ singleNeuronModel(weight=0.6, bias=0.9)
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/single_neuron1.png}
+\includegraphics[width=0.7\textwidth]{./figs/single_neuron1.png}
 \caption{Single neuron with weight=0.6, bias=0.9}
 \end{figure}
 
@@ -1175,7 +1206,7 @@ singleNeuronModel(weight=2.0, bias=2.0)
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/single_neuron3.png}
+\includegraphics[width=0.7\textwidth]{./figs/single_neuron3.png}
 \caption{Single neuron with weight=2.0, bias=2.0}
 \end{figure}
 
@@ -1225,7 +1256,7 @@ the $ \sigma $ function:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/sigmoid_function.png}
+\includegraphics[width=0.7\textwidth]{./figs/sigmoid_function.png}
 \caption{Sigmoid function}
 \end{figure}
 
@@ -1248,7 +1279,7 @@ w_2, \ldots{} $ and a bias, $ b $:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz29.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz29.png}
 \caption{A neuron with multiple inputs}
 \end{figure}
 
@@ -1330,7 +1361,7 @@ singleNeuronModel(weight=0.6, bias=0.9, \
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/single_neuron2_cross_entropy_cost.png}
+\includegraphics[width=0.7\textwidth]{./figs/single_neuron2_cross_entropy_cost.png}
 \caption{Single neuron with cross entropy cost with weight=0.6, bias=0.9}
 \end{figure}
 
@@ -1343,7 +1374,7 @@ singleNeuronModel(weight=2.0, bias=2.0, \
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/single_neuron4_cross_entropy_cost.png}
+\includegraphics[width=0.7\textwidth]{./figs/single_neuron4_cross_entropy_cost.png}
 \caption{Single neuron with cross entropy cost with weight=2.0, bias=2.0}
 \end{figure}
 
@@ -1498,7 +1529,7 @@ learns.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/overfitting1.png}
+\includegraphics[width=0.7\textwidth]{./figs/overfitting1.png}
 \caption{Overfitting effect on the cost of training data}
 \end{figure}
 
@@ -1508,7 +1539,7 @@ data changes over time:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/overfitting2.png}
+\includegraphics[width=0.7\textwidth]{./figs/overfitting2.png}
 \caption{Overfitting effect on the accuracy of test data}
 \end{figure}
 
@@ -1523,7 +1554,7 @@ on the training data:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/overfitting4.png}
+\includegraphics[width=0.7\textwidth]{./figs/overfitting4.png}
 \caption{Overfitting effect on the accuracy of training data}
 \end{figure}
 
@@ -1579,7 +1610,7 @@ training data and the test data.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/overfitting_full.png}
+\includegraphics[width=0.7\textwidth]{./figs/overfitting_full.png}
 \caption{Comparison of accuracies in training and test data}
 \end{figure}
 
@@ -1718,7 +1749,7 @@ did in the earlier, unregularized case.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/regularized1.png}
+\includegraphics[width=0.7\textwidth]{./figs/regularized1.png}
 \caption{Cost in training data for regularized case}
 \end{figure}
 
@@ -1727,7 +1758,7 @@ the entire 400 epochs:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/regularized2.png}
+\includegraphics[width=0.7\textwidth]{./figs/regularized2.png}
 \caption{Accuracy in test data for regularized case}
 \end{figure}
 
@@ -1756,7 +1787,7 @@ monitor_training_accuracy=True)
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/regularized_full.png}
+\includegraphics[width=0.7\textwidth]{./figs/regularized_full.png}
 \caption{Comparison of accuracies of training and test data}
 \end{figure}
 
@@ -1861,7 +1892,7 @@ network:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz30.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz30.png}
 \caption{MLP}
 \end{figure}
 
@@ -1872,7 +1903,7 @@ the following lines.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tikz31.png}
+\includegraphics[width=0.5\textwidth]{./figs/tikz31.png}
 \caption{Dropping neurons out}
 \end{figure}
 
@@ -1904,52 +1935,22 @@ Here some dropout results applied on MNIST data set.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{../src/graphs/dropout_comparison_train_accuracy_train_1000_epoch_100_batch_50_eta_05.png}
+\includegraphics[width=0.7\textwidth]{../src/graphs/dropout_comparison_train_accuracy_train_1000_epoch_100_batch_50_eta_05.png}
 \caption{Dropout effect on train accuracy}
 \end{figure}
 
 \begin{figure}[htp]
 \centering
-\includegraphics{../src/graphs/dropout_comparison_test_accuracy_train_1000_epoch_100_batch_50_eta_05.png}
+\includegraphics[width=0.7\textwidth]{../src/graphs/dropout_comparison_test_accuracy_train_1000_epoch_100_batch_50_eta_05.png}
 \caption{Dropout effect on test accuracy}
 \end{figure}
 
 \begin{figure}[htp]
 \centering
-\includegraphics{../src/graphs/dropout_comparison_test_accuracy_train_1000_epoch_100_batch_50_eta_1.png}
+\includegraphics[width=0.7\textwidth]{../src/graphs/dropout_comparison_test_accuracy_train_1000_epoch_100_batch_50_eta_1.png}
 \caption{Dropout effect on test accuracy}
 \end{figure}
-
-\subsubsection{3.6. Artificially expanding the training data}
-\label{artificially-expanding-the-training-data}
-
-Obtaining more training data is a great idea. Unfortunately, it can be
-expensive, and so is not always possible in practice. However, there's
-another idea which can work nearly as well, and that's to artificially
-expand the training data. Suppose, for example, that we take an MNIST
-training image of a five,
-
-\begin{figure}[htp]
-\centering
-\includegraphics{./figs/more_data_5.png}
-\caption{Normal number five}
-\end{figure}
-
-and rotate it by a small amount, let's say 15 degrees:
-
-\begin{figure}[htp]
-\centering
-\includegraphics{./figs/more_data_rotated_5.png}
-\caption{Rotated number five}
-\end{figure}
-
-It's still recognizably the same digit. And yet at the pixel level it's
-quite different to any image currently in the MNIST training data. It's
-conceivable that adding this image to the training data might help our
-network learn more about how to classify digits. Also we can expand our
-training data by making many small rotations of all the MNIST training
-images, and then using the expanded training data to improve our
-network's performance.
+\newpage
 
 \subsection{3.7. How to choose a neural network's hyper-parameters?}
 \label{how-to-choose-a-neural-networks-hyper-parameters}
@@ -1999,7 +2000,7 @@ Here's a graph showing the behaviour of the training cost as we train.
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/multiple_eta.png}
+\includegraphics[width=0.7\textwidth]{./figs/multiple_eta.png}
 \caption{Comparison of learning rates}
 \end{figure}
 
@@ -2089,7 +2090,7 @@ always another trick you can try to improve performance.
 \subsection{3.8. Other techniques}
 \label{other-techniques}
 
-\paragraph{3.8.1. Hessian technique}
+\subsubsection{3.8.1. Hessian technique}
 \label{hessian-technique}
 
 To begin our discussion it helps to put neural networks aside for a bit.
@@ -2153,7 +2154,7 @@ corresponding Hessian matrix will contain $ 10^7 \times 10^7 =
 when you're going to need to invert the matrix as well! That makes
 Hessian optimization difficult to apply in practice.
 
-\paragraph{Momentum-based gradient descent}
+\subsubsection{3.8.2. Momentum-based gradient descent}
 \label{momentum-based-gradient-descent}
 
 Unlike Hessian technique momentum-based gradient descent avoids large
@@ -2218,7 +2219,7 @@ Hessian technique, using information about how the gradient is changing.
 In practice, the momentum technique is commonly used, and often speeds
 up learning.
 
-\subsection{Other models of artificial neuron}
+\subsection{3.9. Other models of artificial neuron}
 \label{other-models-of-artificial-neuron}
 
 Up to now we've built our neural networks using sigmoid neurons. In
@@ -2252,14 +2253,14 @@ shape as the sigmoid function,
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/tanh_function.png}
+\includegraphics[width=0.7\textwidth]{./figs/tanh_function.png}
 \caption{Tanh function}
 \end{figure}
 
 One difference between tanh neurons and sigmoid neurons is that the
 output from tanh neurons ranges from $ -1 $ to $ 1 $, not $ 0 $ to
 $ 1 $. This means that if you're going to build a network based on
-tanh neurons you may need to normalize your outputs.
+tanh neurons you may need to normalize your outputs\cite{ref3}.
 
 If some of the input activations have different signs, replace the
 sigmoid by an activation function, such as $ \tanh $,
@@ -2278,12 +2279,21 @@ Graphically, the rectifying function $ \max(0, z) $ looks like this:
 
 \begin{figure}[htp]
 \centering
-\includegraphics{./figs/rectifying_function.png}
+\includegraphics[width=0.7\textwidth]{./figs/rectifying_function.png}
 \caption{Rectifying function}
 \end{figure}
 
 Like the sigmoid and tanh neurons, rectified linear units can be used to
 compute any function, and they can be trained using ideas such as
 backpropagation and stochastic gradient descent.
+\newpage
+\begin{thebibliography}{99}
+\bibitem{ref1}
+Nielsen, Michael (2015). Neural Networks and Deep Learning
+\bibitem{ref2}
+Nielsen, Michael (2012-2015). URL: https://github.com/mnielsen/neural-networks-and-deep-learning
+\bibitem{ref3}
+Olah, Christopher (2014). URL: https://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
+\end{thebibliography}
 
 \end{document}

@@ -1,0 +1,35 @@
+\select@language {english}
+\contentsline {section}{Acknowledgements}{iv}{section*.1}
+\contentsline {section}{Abbreviations}{v}{section*.2}
+\contentsline {section}{1. Introduction}{1}{section*.3}
+\contentsline {subsection}{1.1. Perceptrons}{1}{subsection*.4}
+\contentsline {subsection}{1.2. Sigmoid neurons}{3}{subsection*.5}
+\contentsline {subsection}{1.3. The architecture of neural networks}{6}{subsection*.6}
+\contentsline {subsection}{1.4. A simple network to classify handwritten digits}{8}{subsection*.7}
+\contentsline {subsection}{1.5. Learning with gradient descent}{9}{subsection*.8}
+\contentsline {subsection}{1.6. Implementing our network to classify digits}{14}{subsection*.9}
+\contentsline {section}{2. How the backpropagation algorithm works}{15}{section*.10}
+\contentsline {subsection}{2.1. A fast matrix-based approach to computing the output from a neural network}{16}{subsection*.11}
+\contentsline {subsection}{2.2. The Hadamard product, $ s \odot t $}{17}{subsection*.12}
+\contentsline {subsection}{2.3. The four fundamental equations behind backpropagation}{17}{subsection*.13}
+\contentsline {subsection}{2.4. The backpropagation algorithm}{20}{subsection*.14}
+\contentsline {section}{3. Improving the way neural networks learn}{21}{section*.15}
+\contentsline {subsection}{3.1. The cross-entropy cost function}{22}{subsection*.16}
+\contentsline {subsection}{3.2. Introducing the cross-entropy cost function}{26}{subsection*.17}
+\contentsline {subsection}{3.3. Softmax}{29}{subsection*.18}
+\contentsline {subsection}{3.4. Overfitting}{31}{subsection*.19}
+\contentsline {subsection}{3.5. Regularization}{35}{subsection*.20}
+\contentsline {subsection}{3.5.1. Other techniques for regularization}{39}{subsection*.21}
+\contentsline {subsubsection}{3.5.1.1. L1 regularization}{39}{subsubsection*.22}
+\contentsline {subsubsection}{3.5.1.2. Dropout}{40}{subsubsection*.23}
+\contentsline {subsection}{3.7. How to choose a neural network's hyper-parameters?}{44}{subsection*.24}
+\contentsline {subsubsection}{3.7.1. Broad strategy}{44}{subsubsection*.25}
+\contentsline {subsubsection}{3.7.2. Learning rate}{44}{subsubsection*.26}
+\contentsline {subsubsection}{3.7.3. Use early stopping to determine the number of training epochs}{45}{subsubsection*.27}
+\contentsline {subsubsection}{3.7.4. Learning rate schedule}{46}{subsubsection*.28}
+\contentsline {subsubsection}{3.7.5. The regularization parameter}{46}{subsubsection*.29}
+\contentsline {subsubsection}{3.7.6. Mini-batch size}{46}{subsubsection*.30}
+\contentsline {subsection}{3.8. Other techniques}{47}{subsection*.31}
+\contentsline {subsubsection}{3.8.1. Hessian technique}{47}{subsubsection*.32}
+\contentsline {subsubsection}{3.8.2. Momentum-based gradient descent}{48}{subsubsection*.33}
+\contentsline {subsection}{3.9. Other models of artificial neuron}{49}{subsection*.34}
