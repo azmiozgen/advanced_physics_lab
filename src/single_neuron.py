@@ -25,30 +25,35 @@ class CrossEntropyCost(object):
     def diff(self, y, out):
         return (y - out) / (out * (out - 1.))
 
-def singleNeuronModel(weight, bias, x=1.0, y=0.0, costFunction=QuadraticCost(),
-                      eta=0.15, activationFunction=Sigmoid(), epoch=300):
+def singleNeuronModel(params, x=1.0, y=0.0, costFunction=QuadraticCost(), \
+                             eta=0.15, activationFunction=Sigmoid(), epoch=300):
     '''
-    Models a single neuron for given weight and bias.
+    Models a single neuron for given params (weight and bias).
+    i.e. params=[[1.2, 1.453], [6.35442, 3]]
     Input x = 1.0 and expected output y = 0.0.
     Learning rate eta = 0.15.
     Epoch (total training number) is 300.
     '''
-    allCosts = []
-    for i in range(epoch):
+    costs = []
+    for index, (weight, bias) in enumerate(params):
+        costs.append([])
+        for i in range(epoch):
+            z = x * weight + bias
+            out = activationFunction.activate(z)
+            weight -= eta * costFunction.diff(y, out) * \
+                      activationFunction.diff(z) * out
+            bias -= eta * costFunction.diff(y, out) * activationFunction.diff(z)
+            costs[index].append(costFunction.cost(y, out))
+
+        # Last out value with updated weights and biases.
         z = x * weight + bias
         out = activationFunction.activate(z)
-        weight -= eta * costFunction.diff(y, out) * activationFunction.diff(z) * out
-        bias -= eta * costFunction.diff(y, out) * activationFunction.diff(z)
-        allCosts.append(costFunction.cost(y, out))
-
-    # Last out value with updated weights and biases.
-    z = x * weight + bias
-    out = activationFunction.activate(z)
-    allCosts.append(costFunction.cost(y, out))
+        costs[index].append(costFunction.cost(y, out))
 
     # Print last weight, bias and output and drawing.
-    print "weight: {}, bias: {}, output: {}".format(weight, bias, allCosts[-1])
-    plt.plot(range(epoch + 1), allCosts)
+    for index, cost in enumerate(costs):
+        plt.plot(range(epoch + 1), cost, label="initial w, b = {}".format(params[index]))
     plt.xlabel('epochs')
     plt.ylabel('cost')
+    plt.legend()
     plt.show()
